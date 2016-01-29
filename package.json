@@ -1,7 +1,22 @@
 {
   "name": "NProxy",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "a tunneling proxy to xx gfw",
+  "author": {
+      "name": "zenxds",
+      "email": "zenxds@gmail.com"
+  },
+  "keywords": [],
+  "bin": {
+    "NProxy": "bin/cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zenxds/NProxy"
+  },
   "devDependencies": {
-    "request": "~2.67.0"
+    "yargs": "~3.29.0"
+  },
+  "dependencies": {
   }
 }
