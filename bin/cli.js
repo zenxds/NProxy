@@ -9,6 +9,8 @@ var app = require('../lib/app')
 
 var ARGS = yargs
     .usage('$0 [options]')
+    .describe('d', 'enable debug mod')
+    .alias('d', 'debug')
     .describe('p', 'specify the port')
     .alias('p', 'port')
     .describe('v', 'print version')
@@ -27,4 +29,7 @@ if (ARGS.v) {
 }
 
 var port = ARGS.p
-app.run(typeof port === "number" ? port : undefined)
+app.run({
+    port: typeof port === "number" ? port : undefined,
+    debug: ARGS.d
+})
