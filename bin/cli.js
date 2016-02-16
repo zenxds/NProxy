@@ -2,17 +2,12 @@
 'use strict'
 
 const yargs = require('yargs')
-const fs = require('fs')
 const Package = require('../package.json')
-
-var app = require('../lib/app')
 
 var ARGS = yargs
     .usage('$0 [options]')
     .describe('d', 'enable debug mod')
     .alias('d', 'debug')
-    .describe('p', 'specify the port')
-    .alias('p', 'port')
     .describe('v', 'print version')
     .alias('v', 'version')
     .wrap(80)
@@ -28,8 +23,4 @@ if (ARGS.v) {
     process.exit(0)
 }
 
-var port = ARGS.p
-app.run({
-    port: typeof port === "number" ? port : undefined,
-    debug: ARGS.d
-})
+require('../index')
