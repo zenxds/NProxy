@@ -1,6 +1,12 @@
 # NProxy
 
+配置写在config.json，分为tunnel，client，server三部分
+
 ## 一个基于隧道的https代理
+
+参考[HTTP 代理原理及实现（一）](https://imququ.com/post/web-proxy.html)
+
+需要自己生成及导入证书
 
     node index.js -t
 
@@ -8,3 +14,7 @@
 
     node index.js -c client部分
     node index.js -s server部分
+
+将浏览器代理设置为socks5代理，端口为client所在端口
+
+client和server密码要一致，client的serverPort 与 server的port 要一致
