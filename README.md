@@ -18,3 +18,5 @@
 将浏览器代理设置为socks5代理，端口为client所在端口
 
 client和server密码要一致，client的serverPort 与 server的port 要一致
+
+[gfwlist](https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt)
