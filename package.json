@@ -3,21 +3,23 @@
   "version": "0.3.0",
   "description": "a tunneling proxy to xx gfw",
   "author": {
-      "name": "zenxds",
-      "email": "zenxds@gmail.com"
+    "name": "zenxds",
+    "email": "zenxds@gmail.com"
+  },
+  "scripts": {
+    "start:client": "pm2 start index.js --name NProxy -- -c",
+    "start:server": "pm2 start index.js --name NProxy -- -s",
+    "stop": "pm2 stop NProxy",
+    "restart": "pm2 restart NProxy"
   },
   "keywords": [],
   "main": "index.js",
-  "bin": {
-    "NProxy": "bin/cli.js"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/zenxds/NProxy"
   },
-  "devDependencies": {
-    "yargs": "~3.29.0"
-  },
+  "devDependencies": {},
   "dependencies": {
+    "pm2": "^2.5.0"
   }
 }
