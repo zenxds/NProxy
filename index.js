@@ -23,6 +23,7 @@ if (ARGS.c) {
   require('./lib/client').run(Object.assign(config, {
     port: 1113,
     password: '',
+    iv: '',
     serverHost: '',
     serverPort: 8883
   }, localConfig.client || {}))
@@ -32,6 +33,7 @@ if (ARGS.s) {
   require('./lib/server').run(Object.assign(config, {
     port: 8883,
     password: '',
+    iv: '',
     clientHost: '127.0.0.1',
     clientPort: 1113
   }, localConfig.server || {}))
