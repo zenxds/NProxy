@@ -4,7 +4,7 @@ const yargs = require('yargs')
 const util = require('util')
 const ARGS = yargs.argv
 
-const localConfig = fs.existsSync('./config.json') ? require('./config.json') : {}
+const localConfig = fs.existsSync('./config.js') ? require('./config.js') : {}
 const pkg = require('./package.json')
 
 const config = {

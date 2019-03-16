@@ -1,5 +1,5 @@
 node_modules
 
-config.json
+config.js
 private.pem
 public.crt
