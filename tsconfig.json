@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "outDir": "./lib",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es2017",
+    "sourceMap": false,
+    "removeComments": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": [
+    "./src/**/*.ts"
+  ]
+}

@@ -1,16 +1,21 @@
 {
   "name": "NProxy",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "a tunneling proxy to xx gfw",
   "author": {
     "name": "zenxds",
     "email": "zenxds@gmail.com"
   },
   "scripts": {
-    "start:client": "pm2 start index.js --name NProxy -- -c",
-    "start:server": "pm2 start index.js --name NProxy -- -s",
+    "start:dev": "tsc -w",
+    "start:client": "pm2 start lib/index.js --name NProxy -- -c",
+    "start:server": "pm2 start lib/index.js --name NProxy -- -s",
     "stop": "pm2 stop NProxy",
-    "restart": "pm2 restart NProxy"
+    "restart": "pm2 restart NProxy",
+    "compile": "tsc",
+    "prettier": "prettier src/**/*.ts --write",
+    "lint": "eslint src/**/*.ts",
+    "test": "jest ."
   },
   "keywords": [],
   "main": "index.js",
@@ -18,9 +23,33 @@
     "type": "git",
     "url": "https://github.com/zenxds/NProxy"
   },
-  "devDependencies": {},
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint && yarn prettier && yarn compile && yarn test && git add ."
+    }
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/src/"
+    ],
+    "preset": "ts-jest"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.13",
+    "@types/node": "^12.0.2",
+    "@typescript-eslint/eslint-plugin": "^1.9.0",
+    "@typescript-eslint/parser": "^1.9.0",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.3.0",
+    "husky": "^2.3.0",
+    "jest": "^24.8.0",
+    "prettier": "^1.17.1",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.4.5"
+  },
   "dependencies": {
-    "pm2": "^2.5.0",
-    "yargs": "^8.0.2"
+    "pm2": "^3.5.0",
+    "yargs": "^13.2.4"
   }
 }
