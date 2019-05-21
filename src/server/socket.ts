@@ -113,6 +113,8 @@ export default class Socket {
     const cipher = getCipher(options.password, options.iv)
     remote.pipe(cipher).pipe(socket)
 
+    remote.on('error', err => {})
+
     remote.on(
       'end',
       (): void => {
