@@ -52,7 +52,8 @@ const parsers = {
 export default function parse(buffer: Buffer, offset?: number): Result {
   offset = offset || 3
 
-  if (!buffer[offset]) {
+  const method = parsers[buffer[offset]]
+  if (!method) {
     console.log('no parse method: ', buffer)
     return ['', 0]
   }
