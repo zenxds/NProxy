@@ -29,3 +29,5 @@ client和server密码要一致，client的serverPort 与 server的 port 要一�
 * aes-128-gcm: 16
 
 gcm算法还需要一个初始向量，长度推荐为12
+
+> The IV depends on the mode of operation. For most modes (e.g. CBC), the IV must have the same length as the block. AES uses 128-bit blocks, so a 128-bit IV. Note that AES-256 uses a 256-bit key (hence the name), but still with 128-bit blocks.

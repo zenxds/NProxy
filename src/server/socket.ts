@@ -84,11 +84,15 @@ export default class Socket {
   }
 
   parse(data: Buffer): void {
-    const { options } = this
+    const { options, socket } = this
 
     data = decrypt(data, options.password, options.iv)
 
     const [host, port] = parse(data)
+
+    if (!host) {
+      socket.end()
+    }
 
     this.host = host
     this.port = port

@@ -31,16 +31,18 @@ const parsers = {
       offset + 2,
       offset + 2 + buffer[offset + 1]
     )
-    const port = buffer.readUInt16BE(offset + 1 + buffer[offset + 1] + 1)
+    const port = buffer.readUInt16BE(offset + 2 + buffer[offset + 1])
 
     return [host, port]
   },
 
   // IPV6
   [ATYP.IP_V6]: (buffer: Buffer, offset: number): Result => {
-    const host = buffer
-      .slice(buffer[offset + 1], buffer[offset + 1 + 16])
-      .toString('utf8')
+    const host = buffer.toString(
+      'utf8',
+      buffer[offset + 1],
+      buffer[offset + 1 + 16]
+    )
     const port = buffer.readUInt16BE(offset + 1 + 16)
 
     return [host, port]
@@ -49,6 +51,11 @@ const parsers = {
 
 export default function parse(buffer: Buffer, offset?: number): Result {
   offset = offset || 3
+
+  if (!buffer[offset]) {
+    console.log('no parse method: ', buffer)
+    return ['', 0]
+  }
 
   return parsers[buffer[offset]](buffer, offset)
 }

@@ -7,7 +7,7 @@
     "email": "zenxds@gmail.com"
   },
   "scripts": {
-    "start:dev": "tsc -w",
+    "start:dev": "ts-node src/index.ts -s",
     "start:client": "pm2 start lib/index.js --name NProxy -- -c",
     "start:server": "pm2 start lib/index.js --name NProxy -- -s",
     "stop": "pm2 stop NProxy",
@@ -46,6 +46,7 @@
     "jest": "^24.8.0",
     "prettier": "^1.17.1",
     "ts-jest": "^24.0.2",
+    "ts-node": "^8.1.0",
     "typescript": "^3.4.5"
   },
   "dependencies": {

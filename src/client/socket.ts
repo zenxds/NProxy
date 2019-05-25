@@ -180,7 +180,7 @@ export default class Socket {
       }
     )
 
-    // remote.on('error', err => {})
+    remote.on('error', err => {})
 
     remote.on(
       'end',
