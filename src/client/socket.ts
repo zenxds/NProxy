@@ -53,7 +53,7 @@ export default class Socket {
       }
     )
 
-    socket.on('error', err => {})
+    socket.on('error', (err): void => {})
 
     socket.on(
       'end',
@@ -180,7 +180,7 @@ export default class Socket {
       }
     )
 
-    remote.on('error', err => {})
+    remote.on('error', (err): void => {})
 
     remote.on(
       'end',
