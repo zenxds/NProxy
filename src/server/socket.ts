@@ -90,6 +90,7 @@ export default class Socket {
 
     const [host, port] = parse(data)
 
+    // 偶尔会有一些非法的connect，数据格式不正常
     if (!host) {
       socket.end()
     }
