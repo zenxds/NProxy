@@ -16,7 +16,8 @@ if (args.c) {
     serverPort: 8886,
     clientPort: 1113,
     password: '',
-    iv: ''
+    iv: '',
+    header: ''
   }, localConfig.client || {})
   const client = new Client(config)
   const service = client.createServer()
@@ -30,7 +31,8 @@ if (args.s) {
   const config = Object.assign({
     port: 8886,
     password: '',
-    iv: ''
+    iv: '',
+    header: ''
   }, localConfig.server || {})
   const server = new Server(config)
   const service = server.createServer()

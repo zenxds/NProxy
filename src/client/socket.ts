@@ -1,7 +1,7 @@
 import * as net from 'net'
 
 import parse from '../parse'
-import { getDecipher, getCipher, encrypt } from '../encrypt'
+import encryptors from '../encryptor'
 import {
   SOCKS_VERSION,
   AUTHENTICATION,
@@ -147,6 +147,7 @@ export default class Socket {
 
   createRemote(data: Buffer): void {
     const { socket, options } = this
+    const encryptor = encryptors[1]
     const remote = (this.remote = net.connect(
       options.serverPort || 8886,
       options.serverHost
@@ -167,15 +168,20 @@ export default class Socket {
         /**
          * 对返回数据解密
          */
-        const decipher = getDecipher(options.password, options.iv)
+        const decipher = encryptor.getDecipher(options.password, options.iv)
         remote.pipe(decipher).pipe(socket)
         // 主要目的是将 host 跟 port 加密发送
-        remote.write(encrypt(reply, options.password, options.iv))
+        remote.write(
+          Buffer.concat([
+            Buffer.from(this.options.header + '1', 'utf8'),
+            encryptor.encrypt(reply, options.password, options.iv)
+          ])
+        )
 
         /**
          * 加密发送数据
          */
-        const cipher = getCipher(options.password, options.iv)
+        const cipher = encryptor.getCipher(options.password, options.iv)
         socket.pipe(cipher).pipe(remote)
       }
     )

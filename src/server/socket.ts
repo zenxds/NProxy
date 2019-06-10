@@ -1,8 +1,8 @@
 import * as net from 'net'
 
 import parse from '../parse'
-import { getDecipher, getCipher, decrypt } from '../encrypt'
-import { ServerOptions } from '../type'
+import encryptors from '../encryptor'
+import { ServerOptions, Encryptor } from '../type'
 
 enum Status {
   initial = 0,
@@ -20,6 +20,7 @@ export default class Socket {
   status: Status
   host: string
   port: number
+  encryptor: Encryptor
 
   constructor(options: Options) {
     this.options = options
@@ -85,8 +86,24 @@ export default class Socket {
 
   parse(data: Buffer): void {
     const { options, socket } = this
+    const { header } = options
 
-    data = decrypt(data, options.password, options.iv)
+    if (data.toString('utf8', 0, header.length) !== header) {
+      return socket.end()
+    }
+
+    const method = data[header.length]
+    const encryptor = (this.encryptor = encryptors[method])
+
+    if (!encryptor) {
+      return socket.end()
+    }
+
+    data = encryptor.decrypt(
+      data.slice(header.length + 1),
+      options.password,
+      options.iv
+    )
 
     const [host, port] = parse(data)
 
@@ -101,21 +118,27 @@ export default class Socket {
   }
 
   handleData(): void {
-    const { host, port, socket, options } = this
+    const { host, port, socket, options, encryptor } = this
+
+    socket.pause()
 
     const remote = (this.remote = net.connect(port, host))
+
     remote.setNoDelay(true)
+    remote.on('connect', () => {
+      socket.resume()
+    })
 
     /**
      * 解密，发送原文到真正的服务器
      */
-    const decipher = getDecipher(options.password, options.iv)
+    const decipher = encryptor.getDecipher(options.password, options.iv)
     socket.pipe(decipher).pipe(remote)
 
     /**
      * 将结果加密返回
      */
-    const cipher = getCipher(options.password, options.iv)
+    const cipher = encryptor.getCipher(options.password, options.iv)
     remote.pipe(cipher).pipe(socket)
 
     remote.on('error', (err): void => {})
