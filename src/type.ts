@@ -1,4 +1,4 @@
-import * as crypto from 'crypto'
+import * as stream from 'stream'
 
 export interface ClientOptions {
   serverHost: string
@@ -16,8 +16,12 @@ export interface ServerOptions {
 }
 
 export interface Encryptor {
-  getCipher: (password: string, iv: string) => crypto.Cipher
-  getDecipher: (password: string, iv: string) => crypto.Decipher
+  getCipher: (password: string, iv: string) => stream.Duplex
+  getDecipher: (password: string, iv: string) => stream.Duplex
   encrypt: (buffer: Buffer, password: string, iv: string) => Buffer
   decrypt: (buffer: Buffer, password: string, iv: string) => Buffer
+}
+
+export interface TransformCallback {
+  (error?: Error | null, data?: any): void
 }

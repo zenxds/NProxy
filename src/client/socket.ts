@@ -10,6 +10,7 @@ import {
 } from '../socks5'
 import { ClientOptions } from '../type'
 
+const METHOD = 2
 enum Status {
   initial = 0,
   handshake = 1,
@@ -147,7 +148,7 @@ export default class Socket {
 
   createRemote(data: Buffer): void {
     const { socket, options } = this
-    const encryptor = encryptors[1]
+    const encryptor = encryptors[METHOD]
     const remote = (this.remote = net.connect(
       options.serverPort || 8886,
       options.serverHost
@@ -174,7 +175,7 @@ export default class Socket {
         remote.write(
           Buffer.concat([
             Buffer.from(this.options.header, 'utf8'),
-            Buffer.from([1]),
+            Buffer.from([METHOD]),
             encryptor.encrypt(reply, options.password, options.iv)
           ])
         )
