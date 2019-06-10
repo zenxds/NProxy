@@ -173,7 +173,8 @@ export default class Socket {
         // 主要目的是将 host 跟 port 加密发送
         remote.write(
           Buffer.concat([
-            Buffer.from(this.options.header + '1', 'utf8'),
+            Buffer.from(this.options.header, 'utf8'),
+            Buffer.from([1]),
             encryptor.encrypt(reply, options.password, options.iv)
           ])
         )
