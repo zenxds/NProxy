@@ -8,17 +8,22 @@ import Server from './server'
 const args = yargs.argv
 
 const localConfigFile = path.join(__dirname, '../config.js')
-const localConfig = fs.existsSync(localConfigFile) ? require(localConfigFile) : {}
+const localConfig = fs.existsSync(localConfigFile)
+  ? require(localConfigFile)
+  : {}
 
 if (args.c) {
-  const config = Object.assign({
-    serverHost: '',
-    serverPort: 8886,
-    clientPort: 1113,
-    password: '',
-    iv: '',
-    header: ''
-  }, localConfig.client || {})
+  const config = Object.assign(
+    {
+      serverHost: '',
+      serverPort: 8886,
+      clientPort: 1113,
+      password: '',
+      iv: '',
+      header: ''
+    },
+    localConfig.client || {}
+  )
   const client = new Client(config)
   const service = client.createServer()
 
@@ -28,12 +33,15 @@ if (args.c) {
 }
 
 if (args.s) {
-  const config = Object.assign({
-    port: 8886,
-    password: '',
-    iv: '',
-    header: ''
-  }, localConfig.server || {})
+  const config = Object.assign(
+    {
+      port: 8886,
+      password: '',
+      iv: '',
+      header: ''
+    },
+    localConfig.server || {}
+  )
   const server = new Server(config)
   const service = server.createServer()
 

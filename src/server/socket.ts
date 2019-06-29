@@ -38,7 +38,6 @@ export default class Socket {
         // 解密第一个包，得到host和port
         if (this.status === Status.initial) {
           this.parse(data)
-          this.handleData()
         }
       }
     )
@@ -109,12 +108,13 @@ export default class Socket {
 
     // 偶尔会有一些非法的connect，数据格式不正常
     if (!host) {
-      socket.end()
+      return socket.end()
     }
 
     this.host = host
     this.port = port
     this.status = Status.handleData
+    this.handleData()
   }
 
   handleData(): void {
