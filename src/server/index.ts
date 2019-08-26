@@ -1,4 +1,4 @@
-import * as net from 'net'
+import net from 'net'
 
 import Socket from './socket'
 import { ServerOptions } from '../type'

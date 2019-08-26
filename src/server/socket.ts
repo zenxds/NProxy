@@ -1,8 +1,11 @@
-import * as net from 'net'
+import net from 'net'
+import createDebug from 'debug'
 
 import parse from '../parse'
 import encryptors from '../encryptor'
 import { ServerOptions, Encryptor } from '../type'
+
+const debug = createDebug('NProxy:server')
 
 enum Status {
   initial = 0,
@@ -88,6 +91,7 @@ export default class Socket {
     const { header } = options
 
     if (data.toString('utf8', 0, header.length) !== header) {
+      debug('header not match')
       return socket.end()
     }
 
@@ -95,6 +99,7 @@ export default class Socket {
     const encryptor = (this.encryptor = encryptors[method])
 
     if (!encryptor) {
+      debug('no encryptor')
       return socket.end()
     }
 
@@ -108,6 +113,7 @@ export default class Socket {
 
     // 偶尔会有一些非法的connect，数据格式不正常
     if (!host) {
+      debug('no host')
       return socket.end()
     }
 
@@ -122,6 +128,7 @@ export default class Socket {
 
     socket.pause()
 
+    debug(`connect to remote ${host}:${port}`)
     const remote = (this.remote = net.connect(port, host))
 
     remote.setNoDelay(true)

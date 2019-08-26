@@ -1,7 +1,7 @@
 /**
  * parse host and port
  */
-import * as util from 'util'
+import util from 'util'
 import * as socks from './socks5'
 
 const ATYP = socks.ATYP

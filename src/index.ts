@@ -1,6 +1,6 @@
-import * as path from 'path'
-import * as fs from 'fs'
-import * as yargs from 'yargs'
+import path from 'path'
+import fs from 'fs'
+import yargs from 'yargs'
 
 import Client from './client'
 import Server from './server'

@@ -1,4 +1,4 @@
-import * as stream from 'stream'
+import stream from 'stream'
 
 export interface ClientOptions {
   serverHost: string

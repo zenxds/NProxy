@@ -1,4 +1,4 @@
-import * as net from 'net'
+import net from 'net'
 
 import parse from '../parse'
 import encryptors from '../encryptor'
