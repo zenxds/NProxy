@@ -81,7 +81,7 @@ export default class Socket {
     socket.on(
       'timeout',
       (): void => {
-        socket.end()
+        socket.destroy()
       }
     )
   }
@@ -173,7 +173,7 @@ export default class Socket {
     remote.on(
       'timeout',
       (): void => {
-        remote.end()
+        remote.destroy()
       }
     )
   }
