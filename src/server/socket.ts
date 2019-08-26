@@ -133,6 +133,7 @@ export default class Socket {
 
     remote.setNoDelay(true)
     remote.on('connect', () => {
+      debug(`${host}:${port} socket resume`)
       socket.resume()
     })
 
