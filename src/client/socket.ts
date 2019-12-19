@@ -41,16 +41,14 @@ export default class Socket {
       'data',
       (data): void => {
         // 第一次请求是协商版本和认证方法的请求
+        // 第二次请求是请求细节
+        // 后续请求是处理数据，改由pipe实现
+
         if (this.status === Status.initial) {
           this.handshake(data)
-        }
-
-        // 第二次请求是请求细节
-        if (this.status === Status.handshake) {
+        } else if (this.status === Status.handshake) {
           this.handleDetail(data)
         }
-
-        // 后续请求是处理数据，改由pipe实现
       }
     )
 
