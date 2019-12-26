@@ -135,12 +135,11 @@ export default class Socket {
 
     const cmd = data[1]
 
-    // 会有一些[5, 1, 0]这种不符合协议的数据
-    if (cmd === REQUEST_CMD.CONNECT && data[3]) {
+    if (cmd === REQUEST_CMD.CONNECT) {
       this.createRemote(data)
     } else {
-      // socket.end()
       // console.log(`unsupported cmd: ${cmd}`)
+      socket.end()
     }
   }
 
