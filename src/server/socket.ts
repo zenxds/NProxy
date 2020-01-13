@@ -76,9 +76,9 @@ export default class Socket {
 
   parse(data: Buffer): void {
     const { options, socket } = this
-    const { header } = options
+    const header = options.header || ''
 
-    if (data.toString('utf8', 0, header.length) !== header) {
+    if (header && data.toString('utf8', 0, header.length) !== header) {
       debug('header not match')
       return socket.end()
     }

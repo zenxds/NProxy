@@ -5,14 +5,14 @@ export interface ClientOptions {
   serverPort?: number
   password: string
   iv: string
-  header: string
+  header?: string
 }
 
 export interface ServerOptions {
   port?: number
   password: string
   iv: string
-  header: string
+  header?: string
 }
 
 export interface Encryptor {
