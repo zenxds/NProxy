@@ -13,19 +13,16 @@ export default class Server {
   createServer(): net.Server {
     const server = net.createServer()
 
-    server.on(
-      'connection',
-      (socket): void => {
-        new Socket(
-          Object.assign(
-            {
-              socket
-            },
-            this.options
-          )
+    server.on('connection', (socket): void => {
+      new Socket(
+        Object.assign(
+          {
+            socket
+          },
+          this.options
         )
-      }
-    )
+      )
+    })
 
     return server
   }

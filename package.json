@@ -10,6 +10,7 @@
     "start:dev": "ts-node src/index.ts -s",
     "start:client": "pm2 start lib/index.js --name NProxy -- -c",
     "start:server": "pm2 start lib/index.js --name NProxy -- -s",
+    "start:docker": "pm2-runtime start lib/index.js -- -s",
     "stop": "pm2 stop NProxy",
     "restart": "pm2 restart NProxy",
     "compile": "tsc",
@@ -52,7 +53,7 @@
   },
   "dependencies": {
     "debug": "^4.1.1",
-    "pm2": "^3.5.0",
+    "pm2": "^4.2.1",
     "yargs": "^13.2.4"
   }
 }

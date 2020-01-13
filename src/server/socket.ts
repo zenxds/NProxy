@@ -35,26 +35,20 @@ export default class Socket {
   bind(): void {
     const socket = this.socket
 
-    socket.on(
-      'data',
-      (data): void => {
-        // 解密第一个包，得到host和port
-        if (this.status === Status.initial) {
-          this.parse(data)
-        }
+    socket.on('data', (data): void => {
+      // 解密第一个包，得到host和port
+      if (this.status === Status.initial) {
+        this.parse(data)
       }
-    )
+    })
 
     socket.on('error', (err): void => {})
 
-    socket.on(
-      'end',
-      (): void => {
-        if (this.remote) {
-          this.remote.end()
-        }
+    socket.on('end', (): void => {
+      if (this.remote) {
+        this.remote.end()
       }
-    )
+    })
 
     // socket.on('drain', () => {
     //   if (this.remote) {
@@ -62,28 +56,22 @@ export default class Socket {
     //   }
     // })
 
-    socket.on(
-      'close',
-      (err): void => {
-        if (!this.remote) {
-          return
-        }
-
-        if (err) {
-          this.remote.destroy()
-        } else {
-          this.remote.end()
-        }
+    socket.on('close', (err): void => {
+      if (!this.remote) {
+        return
       }
-    )
+
+      if (err) {
+        this.remote.destroy()
+      } else {
+        this.remote.end()
+      }
+    })
 
     socket.setTimeout(60 * 1000)
-    socket.on(
-      'timeout',
-      (): void => {
-        socket.destroy()
-      }
-    )
+    socket.on('timeout', (): void => {
+      socket.destroy()
+    })
   }
 
   parse(data: Buffer): void {
@@ -151,30 +139,21 @@ export default class Socket {
 
     remote.on('error', (err): void => {})
 
-    remote.on(
-      'end',
-      (): void => {
+    remote.on('end', (): void => {
+      socket.end()
+    })
+
+    remote.on('close', (err): void => {
+      if (err) {
+        socket.destroy()
+      } else {
         socket.end()
       }
-    )
-
-    remote.on(
-      'close',
-      (err): void => {
-        if (err) {
-          socket.destroy()
-        } else {
-          socket.end()
-        }
-      }
-    )
+    })
 
     remote.setTimeout(60 * 1000)
-    remote.on(
-      'timeout',
-      (): void => {
-        remote.destroy()
-      }
-    )
+    remote.on('timeout', (): void => {
+      remote.destroy()
+    })
   }
 }
