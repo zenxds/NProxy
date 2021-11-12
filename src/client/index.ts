@@ -1,7 +1,7 @@
 import net from 'net'
 
 import Socket from './socket'
-import { ClientOptions } from '../type'
+import { ClientOptions } from './type'
 
 export default class Client {
   options: ClientOptions

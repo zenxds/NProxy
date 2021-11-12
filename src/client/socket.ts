@@ -1,21 +1,13 @@
 import net from 'net'
-
-import parse from '../parse'
 import encryptors from '../encryptor'
-import {
-  SOCKS_VERSION,
-  AUTHENTICATION,
-  REQUEST_CMD,
-  REPLIES_REP
-} from '../socks5'
-import { ClientOptions } from '../type'
+import { SOCKS_VERSION as SOCKS4_VERSION } from './socks4/constant'
+import { SOCKS_VERSION as SOCKS5_VERSION } from './socks5/constant'
+import Socks4 from './socks4'
+import Socks5 from './socks5'
+import { transformConnect, debug } from './util'
+import { ClientOptions, SocksClass } from './type'
 
 const METHOD = 2
-enum Status {
-  initial = 0,
-  handshake = 1,
-  handleDetail = 2
-}
 
 type Options = ClientOptions & {
   socket: net.Socket
@@ -25,143 +17,137 @@ export default class Socket {
   options: Options
   socket: net.Socket
   remote: net.Socket
-  status: Status
+  socksMap: {
+    [key: string]: SocksClass
+  }
 
   constructor(options: Options) {
     this.options = options
     this.socket = options.socket
-    this.status = Status.initial
+    this.socksMap = {
+      [SOCKS4_VERSION]: new Socks4(this.socket),
+      [SOCKS5_VERSION]: new Socks5(this.socket)
+    }
+
     this.bind()
   }
 
   bind(): void {
-    const socket = this.socket
+    const { socket, socksMap } = this
+
+    for (let i in socksMap) {
+      let socks = socksMap[i]
+      socks.once('connect', (data: Buffer): void => {
+        this.connectRemote(data, socks)
+      })
+    }
+
+    socket.setNoDelay(true)
 
     socket.on('data', (data): void => {
-      // 第一次请求是协商版本和认证方法的请求
-      // 第二次请求是请求细节
-      // 后续请求是处理数据，改由pipe实现
-
-      if (this.status === Status.initial) {
-        this.handshake(data)
-      } else if (this.status === Status.handshake) {
-        this.handleDetail(data)
-      }
-    })
-
-    socket.on('error', (err): void => {})
-
-    socket.on('end', (): void => {
+      // 有remote代表进入了转发阶段，通过pipe实现
       if (this.remote) {
-        this.remote.end()
-      }
-    })
-
-    // socket.on('drain', () => {
-    //   if (this.remote) {
-    //     this.remote.resume()
-    //   }
-    // })
-
-    socket.on('close', (err): void => {
-      if (!this.remote) {
         return
       }
 
-      if (err) {
-        this.remote.destroy()
+      const version = data[0]
+
+      if (socksMap[version]) {
+        socksMap[version].handleData(data)
       } else {
-        this.remote.end()
+        this.end(socket, true)
       }
+    })
+
+    socket.on('error', (err): void => {
+      debug('client err: %s', err.message)
+    })
+
+    socket.on('end', (): void => {
+      this.unbind()
+      this.end(this.remote)
+    })
+
+    socket.on('close', (err): void => {
+      this.unbind()
+      this.end(this.remote, err)
     })
 
     socket.setTimeout(60 * 1000)
     socket.on('timeout', (): void => {
-      socket.end()
+      this.end(socket, true)
     })
   }
 
-  handshake(data: Buffer): void {
-    const socket = this.socket
+  unbind(): void {
+    const { socksMap } = this
 
-    if (!this.isSupport(data[0])) {
-      socket.end()
-      return
-    }
-
-    const nmethods = data[1]
-    const authentications = new Set()
-    for (let i = 0; i < nmethods; i++) {
-      authentications.add(data[2 + i])
-    }
-
-    const reply = Buffer.alloc(2)
-    reply[0] = SOCKS_VERSION
-
-    /**
-     * 只支持了不需要用户密码的情况
-     */
-    if (authentications.has(AUTHENTICATION.NOAUTH)) {
-      reply[1] = AUTHENTICATION.NOAUTH
-      socket.write(reply)
-
-      // 握手完成
-      this.status = Status.handshake
-    } else {
-      reply[1] = AUTHENTICATION.NONE
-      socket.end(reply)
+    for (let i in socksMap) {
+      socksMap[i].removeAllListeners()
     }
   }
 
-  handleDetail(data: Buffer): void {
-    const socket = this.socket
-
-    if (!this.isSupport(data[0])) {
-      socket.end()
+  end(socket?: net.Socket, err?: boolean): void {
+    if (!socket || socket.destroyed) {
       return
     }
 
-    const cmd = data[1]
-
-    if (cmd === REQUEST_CMD.CONNECT) {
-      this.createRemote(data)
+    if (err) {
+      socket.destroy()
     } else {
-      // console.log(`unsupported cmd: ${cmd}`)
       socket.end()
     }
   }
 
-  createRemote(data: Buffer): void {
+  connectRemote(data: Buffer, socks: SocksClass): void {
     const { socket, options } = this
-    const encryptor = encryptors[METHOD]
+
+    socket.pause()
+
     const remote = (this.remote = net.connect(
       options.serverPort || 8886,
       options.serverHost
     ))
+    const version = data[0]
 
+    remote.setNoDelay(true)
     remote.on('connect', (): void => {
-      const reply = Buffer.alloc(data.length)
-      data.copy(reply)
-      reply[1] = REPLIES_REP.SUCCEEDED
+      socket.resume()
+      socks.replyConnect(data)
 
-      socket.write(reply)
-      this.status = Status.handleDetail
+      const header = Buffer.from(options.header, 'utf8')
+      const encryptor = encryptors[METHOD]
 
-      remote.setNoDelay(true)
+      // 主要目的是将 host 跟 port 加密发送
+      if (version === SOCKS5_VERSION) {
+        const buffer = Buffer.alloc(data.length)
+        data.copy(buffer)
+        remote.write(
+          Buffer.concat([
+            header,
+            Buffer.from([METHOD]),
+            encryptor.encrypt(buffer, options.password, options.iv)
+          ])
+        )
+      }
+
+      // 服务端基于版本5解析，这里构造5的请求格式
+      if (version === SOCKS4_VERSION) {
+        const buffer = transformConnect(data)
+        remote.write(
+          Buffer.concat([
+            header,
+            Buffer.from([METHOD]),
+            encryptor.encrypt(buffer, options.password, options.iv)
+          ])
+        )
+      }
 
       /**
        * 对返回数据解密
        */
       const decipher = encryptor.getDecipher(options.password, options.iv)
       remote.pipe(decipher).pipe(socket)
-      // 主要目的是将 host 跟 port 加密发送
-      remote.write(
-        Buffer.concat([
-          Buffer.from(this.options.header || '', 'utf8'),
-          Buffer.from([METHOD]),
-          encryptor.encrypt(reply, options.password, options.iv)
-        ])
-      )
 
       /**
        * 加密发送数据
@@ -170,27 +156,21 @@ export default class Socket {
       socket.pipe(cipher).pipe(remote)
     })
 
-    remote.on('error', (err): void => {})
+    remote.on('error', (err): void => {
+      debug('remote err: %s', err.message)
+    })
 
     remote.on('end', (): void => {
-      socket.end()
+      this.end(socket)
     })
 
     remote.on('close', (err): void => {
-      if (err) {
-        socket.destroy()
-      } else {
-        socket.end()
-      }
+      this.end(socket, err)
     })
 
     remote.setTimeout(60 * 1000)
     remote.on('timeout', (): void => {
-      remote.end()
+      this.end(remote, true)
     })
-  }
-
-  isSupport(version: number): boolean {
-    return version === SOCKS_VERSION
   }
 }
