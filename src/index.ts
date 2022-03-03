@@ -27,7 +27,7 @@ if (args.c) {
   const client = new Client(config)
   const service = client.createServer()
 
-  service.listen(config.clientPort, '0.0.0.0', () => {
+  service.listen(config.clientPort, '0.0.0.0', (): void => {
     console.log('client is running at ' + config.clientPort)
   })
 }
@@ -45,7 +45,7 @@ if (args.s) {
   const server = new Server(config)
   const service = server.createServer()
 
-  service.listen(config.port, '0.0.0.0', () => {
+  service.listen(config.port, '0.0.0.0', (): void => {
     console.log('server is running at ' + config.port)
   })
 }
