@@ -18,19 +18,17 @@ async function test(server: Server): Promise<number | string> {
   return new Promise(resolve => {
     const config = {
       clientPort: port,
-      serverHost: server[0],
       serverPort: server[1]
-    }
-
-    if (!config.serverHost) {
-      delete config.serverHost
     }
 
     const client = new Client(Object.assign({}, clientConfig, config))
     const s = client.createServer()
     s.listen(port, '0.0.0.0', (): void => {
       const start = Date.now()
-      const agent = new SocksProxyAgent(`socks://127.0.0.1:${port}`)
+      const agent = new SocksProxyAgent({
+        hostname: '127.0.0.1',
+        port
+      })
       https
         .get('https://www.google.com', { agent }, res => {
           // console.log('statusCode:', res.statusCode)

@@ -7,7 +7,7 @@ import Server from './server'
 
 const args = yargs.argv
 
-const localConfigFile = path.join(__dirname, '../config.js')
+const localConfigFile = (args.config as string) || path.join(__dirname, '../config.js')
 const localConfig = fs.existsSync(localConfigFile)
   ? require(localConfigFile)
   : {}
