@@ -1,6 +1,7 @@
 import net from 'net'
 
-import { SOCKS_VERSION, AUTHENTICATION, REQUEST_CMD, REPLIES_REP } from './constant'
+import { SOCKS_VERSION, AUTHENTICATION, REQUEST_CMD, REPLIES_REP, ATYP } from './constant'
+import parse from './parse'
 import { SocksClass } from '../type'
 
 enum Status {
@@ -34,17 +35,6 @@ export default class Socks extends SocksClass {
     }
   }
 
-  public replyConnect(data: Buffer): void {
-    const socket = this.socket
-
-    const reply = Buffer.alloc(data.length)
-    data.copy(reply)
-    reply[1] = REPLIES_REP.SUCCEEDED
-    socket.write(reply)
-
-    this.status = Status.handleDetail
-  }
-
   private handshake(data: Buffer): void {
     const socket = this.socket
 
@@ -70,6 +60,30 @@ export default class Socks extends SocksClass {
       reply[1] = AUTHENTICATION.NONE
       socket.end(reply)
     }
+  }
+
+  public replyConnect(data: Buffer): void {
+    const socket = this.socket
+    const [host, port] = parse(data)
+    const isIPLike = data[3] === ATYP.DOMAINNAME && /\d+\.\d+\.\d+\.\d+/.test(host)
+    const reply = Buffer.alloc(isIPLike ? 10 : data.length)
+    data.copy(reply)
+    reply[1] = REPLIES_REP.SUCCEEDED
+
+    if (isIPLike) {
+      reply[3] = ATYP.IP_V4
+
+      const arr = host.split('.')
+      reply[4] = parseInt(arr[0])
+      reply[5] = parseInt(arr[1])
+      reply[6] = parseInt(arr[2])
+      reply[7] = parseInt(arr[3])
+      reply[8] = port >> 8
+      reply[9] = port & 0xff
+    }
+
+    socket.write(reply)
+    this.status = Status.handleDetail
   }
 
   private handleDetail(data: Buffer): void {

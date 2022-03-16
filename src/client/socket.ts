@@ -1,4 +1,5 @@
 import net from 'net'
+import parse from '../parse'
 import encryptors from '../encryptor'
 import { SOCKS_VERSION as SOCKS4_VERSION } from './socks4/constant'
 import { SOCKS_VERSION as SOCKS5_VERSION } from './socks5/constant'
@@ -102,18 +103,26 @@ export default class Socket {
   connectRemote(data: Buffer, socks: SocksClass): void {
     const { socket, options } = this
 
+    const [host, port] = parse(data)
+    const isLocal = /(localhost|127\.0\.0\.1)/.test(host)
+
     socket.pause()
 
-    const remote = (this.remote = net.connect(
-      options.serverPort || 8886,
-      options.serverHost
-    ))
+    const remote = (this.remote = isLocal
+      ? net.connect(port, host)
+      : net.connect(options.serverPort || 8886, options.serverHost))
     const version = data[0]
 
     remote.setNoDelay(true)
     remote.on('connect', (): void => {
       socket.resume()
       socks.replyConnect(data)
+
+      if (isLocal) {
+        socket.pipe(remote)
+        remote.pipe(socket)
+        return
+      }
 
       const header = Buffer.from(options.header, 'utf8')
       const encryptor = encryptors[METHOD]
