@@ -14,8 +14,8 @@ export const REQUEST_CMD = {
 }
 
 export const REPLIES_REP = {
-  GRANTED: 0x5A,
-  REJECTED: 0x5B,
-  FAILED_1: 0x5C,
-  FAILED_2: 0x5D
+  GRANTED: 0x5a,
+  REJECTED: 0x5b,
+  FAILED_1: 0x5c,
+  FAILED_2: 0x5d
 }

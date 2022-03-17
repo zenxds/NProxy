@@ -51,5 +51,10 @@ const parsers = {
 export default function parse(buffer: Buffer, offset?: number): Result {
   offset = offset || 3
 
-  return parsers[buffer[offset]](buffer, offset)
+  const method = parsers[buffer[offset]]
+  if (!method) {
+    return ['', 0]
+  }
+
+  return method(buffer, offset)
 }

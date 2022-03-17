@@ -9,20 +9,29 @@ module.exports = {
     "jest": true
   },
   "extends": [
+    "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "prettier",
-    "prettier/@typescript-eslint"
   ],
   "plugins": [
     "@typescript-eslint"
   ],
   "globals": {},
   "rules": {
-    "@typescript-eslint/indent": [
-      "warn",
-      2
+    'no-empty': [
+      'error',
+      {
+        allowEmptyCatch: true,
+      },
     ],
-    "@typescript-eslint/no-unused-vars": "off",
+    '@typescript-eslint/no-unused-vars': [
+      'warn',
+      {
+        args: 'after-used',
+        ignoreRestSiblings: true,
+      },
+    ],
+    '@typescript-eslint/no-explicit-any': 'off',
     "@typescript-eslint/explicit-member-accessibility": "off"
   }
 }

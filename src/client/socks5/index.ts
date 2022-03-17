@@ -1,8 +1,15 @@
 import net from 'net'
 
-import { SOCKS_VERSION, AUTHENTICATION, REQUEST_CMD, REPLIES_REP, ATYP } from './constant'
-import parse from './parse'
+import {
+  SOCKS_VERSION,
+  AUTHENTICATION,
+  REQUEST_CMD,
+  REPLIES_REP,
+  ATYP,
+  parse
+} from '../../socks5'
 import { SocksClass } from '../type'
+import { isIP } from '../util'
 
 enum Status {
   initial = 0,
@@ -65,7 +72,7 @@ export default class Socks extends SocksClass {
   public replyConnect(data: Buffer): void {
     const socket = this.socket
     const [host, port] = parse(data)
-    const isIPLike = data[3] === ATYP.DOMAINNAME && /\d+\.\d+\.\d+\.\d+/.test(host)
+    const isIPLike = data[3] === ATYP.DOMAINNAME && isIP(host)
     const reply = Buffer.alloc(isIPLike ? 10 : data.length)
     data.copy(reply)
     reply[1] = REPLIES_REP.SUCCEEDED

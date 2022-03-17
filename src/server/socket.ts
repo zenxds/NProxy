@@ -42,7 +42,7 @@ export default class Socket {
       }
     })
 
-    socket.on('error', (err): void => {})
+    // socket.on('error', (err): void => {})
 
     socket.on('end', (): void => {
       if (this.remote) {
@@ -80,7 +80,8 @@ export default class Socket {
 
     if (header && data.toString('utf8', 0, header.length) !== header) {
       debug('header not match')
-      return socket.end()
+      socket.end()
+      return
     }
 
     const method = data[header.length]
@@ -88,7 +89,8 @@ export default class Socket {
 
     if (!encryptor) {
       debug('no encryptor')
-      return socket.end()
+      socket.end()
+      return
     }
 
     data = encryptor.decrypt(
@@ -102,7 +104,8 @@ export default class Socket {
     // 偶尔会有一些非法的connect，数据格式不正常
     if (!host) {
       debug('no host')
-      return socket.end()
+      socket.end()
+      return
     }
 
     this.host = host
@@ -120,7 +123,7 @@ export default class Socket {
     const remote = (this.remote = net.connect(port, host))
 
     remote.setNoDelay(true)
-    remote.on('connect', () => {
+    remote.on('connect', (): void => {
       debug(`${host}:${port} socket resume`)
       socket.resume()
     })
@@ -137,7 +140,7 @@ export default class Socket {
     const cipher = encryptor.getCipher(options.password, options.iv)
     remote.pipe(cipher).pipe(socket)
 
-    remote.on('error', (err): void => {})
+    // remote.on('error', (err): void => {})
 
     remote.on('end', (): void => {
       socket.end()

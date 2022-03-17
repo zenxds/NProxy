@@ -1,10 +1,10 @@
 import net from 'net'
-import parse from '../parse'
 import encryptors from '../encryptor'
-import { SOCKS_VERSION as SOCKS4_VERSION } from './socks4/constant'
-import { SOCKS_VERSION as SOCKS5_VERSION } from './socks5/constant'
+import { SOCKS_VERSION as SOCKS4_VERSION } from '../socks4'
+import { SOCKS_VERSION as SOCKS5_VERSION } from '../socks5'
 import Socks4 from './socks4'
 import Socks5 from './socks5'
+import parse from '../parse'
 import { transformConnect, debug } from './util'
 import { ClientOptions, SocksClass } from './type'
 
@@ -36,8 +36,8 @@ export default class Socket {
   bind(): void {
     const { socket, socksMap } = this
 
-    for (let i in socksMap) {
-      let socks = socksMap[i]
+    for (const i in socksMap) {
+      const socks = socksMap[i]
       socks.once('connect', (data: Buffer): void => {
         this.connectRemote(data, socks)
       })
@@ -83,7 +83,7 @@ export default class Socket {
   unbind(): void {
     const { socksMap } = this
 
-    for (let i in socksMap) {
+    for (const i in socksMap) {
       socksMap[i].removeAllListeners()
     }
   }
@@ -142,7 +142,7 @@ export default class Socket {
 
       // 服务端基于版本5解析，这里构造5的请求格式
       if (version === SOCKS4_VERSION) {
-        const buffer = transformConnect(data)
+        const buffer = transformConnect(data, host)
         remote.write(
           Buffer.concat([
             header,
