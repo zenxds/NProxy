@@ -1,4 +1,6 @@
 import net from 'net'
+import dns from 'dns'
+import { promisify } from 'util'
 
 import {
   SOCKS_VERSION,
@@ -9,7 +11,8 @@ import {
   parse
 } from '../../socks5'
 import { SocksClass } from '../type'
-import { isIP } from '../util'
+
+const lookup = promisify(dns.lookup)
 
 enum Status {
   initial = 0,
@@ -69,18 +72,30 @@ export default class Socks extends SocksClass {
     }
   }
 
-  public replyConnect(data: Buffer): void {
+  public async replyConnect(data: Buffer): Promise<void> {
     const socket = this.socket
     const [host, port] = parse(data)
-    const isIPLike = data[3] === ATYP.DOMAINNAME && isIP(host)
-    const reply = Buffer.alloc(isIPLike ? 10 : data.length)
+
+    let ip = ''
+
+    // domain
+    if (data[3] === ATYP.DOMAINNAME) {
+      try {
+        const lookupAddress = await lookup(host, { family: 4 })
+        ip = lookupAddress.address
+      } catch (err) {}
+    } else if (data[3] === ATYP.IP_V4) {
+      ip = host
+    }
+
+    const reply = Buffer.alloc(ip ? 10 : data.length)
     data.copy(reply)
     reply[1] = REPLIES_REP.SUCCEEDED
 
-    if (isIPLike) {
+    if (ip) {
       reply[3] = ATYP.IP_V4
 
-      const arr = host.split('.')
+      const arr = ip.split('.')
       reply[4] = parseInt(arr[0])
       reply[5] = parseInt(arr[1])
       reply[6] = parseInt(arr[2])
