@@ -1,5 +1,5 @@
 # FROM node:10-alpine
-FROM node:10
+FROM node:16
 
 ENV APP_DIR /home/node/app
 
@@ -12,7 +12,7 @@ WORKDIR $APP_DIR
 
 COPY yarn.lock package.json $APP_DIR/
 
-RUN yarn install --production --registry=https://registry.npm.taobao.org
+RUN yarn install --production --registry=https://registry.npmmirror.com
 
 COPY . $APP_DIR
 
