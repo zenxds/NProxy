@@ -21,7 +21,7 @@ export function transformConnect(data: Buffer, host: string): Buffer {
       data[7],
       // port
       data[2],
-      data[3]
+      data[3],
     ])
   }
 
@@ -33,14 +33,14 @@ export function transformConnect(data: Buffer, host: string): Buffer {
       // 保留位
       0,
       ATYP.DOMAINNAME,
-      host.length
+      host.length,
     ]
       .concat(Array.from(Buffer.from(host)))
       .concat([
         // port
         data[2],
-        data[3]
-      ])
+        data[3],
+      ]),
   )
 }
 

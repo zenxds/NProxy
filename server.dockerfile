@@ -1,5 +1,4 @@
-# FROM node:10-alpine
-FROM node:16
+FROM node:18-alpine
 
 ENV APP_DIR /home/node/app
 
@@ -19,4 +18,4 @@ COPY . $APP_DIR
 EXPOSE 8886
 
 # Entrypoint
-CMD ["npm", "run", "start:docker"]
+CMD ["npm", "run", "start:server:docker"]

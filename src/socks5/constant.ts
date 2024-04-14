@@ -45,7 +45,7 @@ export const AUTHENTICATION = {
   NOAUTH: 0x00,
   GSSAPI: 0x01,
   USERPASS: 0x02,
-  NONE: 0xff
+  NONE: 0xff,
 }
 
 /*
@@ -57,7 +57,7 @@ export const AUTHENTICATION = {
 export const REQUEST_CMD = {
   CONNECT: 0x01,
   BIND: 0x02,
-  UDP_ASSOCIATE: 0x03
+  UDP_ASSOCIATE: 0x03,
 }
 
 /*
@@ -69,7 +69,7 @@ export const REQUEST_CMD = {
 export const ATYP = {
   IP_V4: 0x01,
   DOMAINNAME: 0x03,
-  IP_V6: 0x04
+  IP_V6: 0x04,
 }
 
 export const REPLIES_REP = {
@@ -81,5 +81,5 @@ export const REPLIES_REP = {
   CONNECTION_REFUSED: 0x05,
   TTL_EXPIRED: 0x06,
   COMMAND_NOT_SUPPORTED: 0x07,
-  ADDRESS_TYPE_NOT_SUPPORTED: 0x08
+  ADDRESS_TYPE_NOT_SUPPORTED: 0x08,
 }

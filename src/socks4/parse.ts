@@ -13,7 +13,7 @@ export default function parse(buffer: Buffer): Result {
     buffer[4],
     buffer[5],
     buffer[6],
-    buffer[7]
+    buffer[7],
   )
 
   // SOCKS4a

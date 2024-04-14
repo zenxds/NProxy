@@ -27,7 +27,7 @@ export default class Socket {
     this.socket = options.socket
     this.socksMap = {
       [SOCKS4_VERSION]: new Socks4(this.socket),
-      [SOCKS5_VERSION]: new Socks5(this.socket)
+      [SOCKS5_VERSION]: new Socks5(this.socket),
     }
 
     this.bind()
@@ -135,8 +135,8 @@ export default class Socket {
           Buffer.concat([
             header,
             Buffer.from([METHOD]),
-            encryptor.encrypt(buffer, options.password, options.iv)
-          ])
+            encryptor.encrypt(buffer, options.password, options.iv),
+          ]),
         )
       }
 
@@ -147,8 +147,8 @@ export default class Socket {
           Buffer.concat([
             header,
             Buffer.from([METHOD]),
-            encryptor.encrypt(buffer, options.password, options.iv)
-          ])
+            encryptor.encrypt(buffer, options.password, options.iv),
+          ]),
         )
       }
 

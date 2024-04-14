@@ -10,12 +10,12 @@ export const SOCKS_NULL = 0x00
  */
 export const REQUEST_CMD = {
   CONNECT: 0x01,
-  BIND: 0x02
+  BIND: 0x02,
 }
 
 export const REPLIES_REP = {
   GRANTED: 0x5a,
   REJECTED: 0x5b,
   FAILED_1: 0x5c,
-  FAILED_2: 0x5d
+  FAILED_2: 0x5d,
 }

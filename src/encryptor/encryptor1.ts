@@ -30,7 +30,7 @@ class EncryptStream extends Transform {
   _transform(
     chunk: Buffer,
     encoding: string,
-    callback: TransformCallback
+    callback: TransformCallback,
   ): void {
     this.push(this.encrypt(chunk))
     callback()

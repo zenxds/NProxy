@@ -4,7 +4,7 @@ module.exports = {
     "iv": "",
     "serverHost": "",
     "serverPort": 8886,
-    "clientPort": 1116,
+    "clientPort": 1113,
     "header": ""
   },
   "server": {

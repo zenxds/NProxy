@@ -17,10 +17,10 @@ export default class Client {
       new Socket(
         Object.assign(
           {
-            socket
+            socket,
           },
-          this.options
-        )
+          this.options,
+        ),
       )
     })
 

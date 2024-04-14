@@ -9,7 +9,7 @@ interface EncryptorMap {
 
 const encryptors: EncryptorMap = {
   '1': cfb,
-  '2': encryptor1
+  '2': encryptor1,
 }
 
 export default encryptors

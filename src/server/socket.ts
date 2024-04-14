@@ -9,7 +9,7 @@ const debug = createDebug('NProxy:server')
 
 enum Status {
   initial = 0,
-  handleData = 1
+  handleData = 1,
 }
 
 type Options = ServerOptions & {
@@ -96,7 +96,7 @@ export default class Socket {
     data = encryptor.decrypt(
       data.slice(header.length + 1),
       options.password,
-      options.iv
+      options.iv,
     )
 
     const [host, port] = parse(data)

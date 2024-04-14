@@ -14,7 +14,7 @@ const parsers = {
       buffer[offset + 1],
       buffer[offset + 2],
       buffer[offset + 3],
-      buffer[offset + 4]
+      buffer[offset + 4],
     )
     const port = buffer.readUInt16BE(offset + 4 + 1)
 
@@ -28,7 +28,7 @@ const parsers = {
     const host = buffer.toString(
       'utf8',
       offset + 2,
-      offset + 2 + buffer[offset + 1]
+      offset + 2 + buffer[offset + 1],
     )
     const port = buffer.readUInt16BE(offset + 2 + buffer[offset + 1])
 
@@ -40,12 +40,12 @@ const parsers = {
     const host = buffer.toString(
       'utf8',
       buffer[offset + 1],
-      buffer[offset + 1 + 16]
+      buffer[offset + 1 + 16],
     )
     const port = buffer.readUInt16BE(offset + 1 + 16)
 
     return [host, port]
-  }
+  },
 }
 
 export default function parse(buffer: Buffer, offset?: number): Result {

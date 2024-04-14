@@ -12,8 +12,8 @@
 
 ## 一个类ss实现
 
-    node lib/index.js -c client部分
-    node lib/index.js -s server部分
+    PROXY_ENV=client node lib/index.js
+    PROXY_ENV=server node lib/index.js
 
 将浏览器代理设置为socks5代理，端口为client所在端口
 
@@ -35,6 +35,6 @@ gcm算法还需要一个初始向量，长度推荐为12
 ## docker
 
 ```
-docker build -t zenxds/nproxy:1.0 .
+docker build -t zenxds/nproxy:latest .
 sh ./start.sh
 ```
