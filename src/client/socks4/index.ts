@@ -1,6 +1,11 @@
 import net from 'net'
 
-import { SOCKS_VERSION, SOCKS_NULL, REQUEST_CMD, REPLIES_REP } from '../../socks4'
+import {
+  SOCKS_VERSION,
+  SOCKS_NULL,
+  REQUEST_CMD,
+  REPLIES_REP,
+} from '../../socks4'
 import { SocksClass } from '../type'
 
 export default class Socks extends SocksClass {

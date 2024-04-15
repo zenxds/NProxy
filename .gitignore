@@ -67,3 +67,4 @@ config.js
 private.pem
 public.crt
 lib/
+.yalc/

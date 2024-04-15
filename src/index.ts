@@ -18,7 +18,7 @@ if (env === 'client') {
       iv: '',
       header: '',
     },
-    localConfig.client || {}
+    localConfig.client || {},
   )
   const client = new Client(config)
   const service = client.createServer()
@@ -34,7 +34,7 @@ if (env === 'client') {
       iv: '',
       header: '',
     },
-    localConfig.server || {}
+    localConfig.server || {},
   )
   const server = new Server(config)
   const service = server.createServer()

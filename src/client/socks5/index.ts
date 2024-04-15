@@ -8,7 +8,7 @@ import {
   REQUEST_CMD,
   REPLIES_REP,
   ATYP,
-  parse
+  parse,
 } from '../../socks5'
 import { SocksClass } from '../type'
 
@@ -17,7 +17,7 @@ const lookup = promisify(dns.lookup)
 enum Status {
   initial = 0,
   handshake = 1,
-  handleDetail = 2
+  handleDetail = 2,
 }
 
 export default class Socks extends SocksClass {
@@ -83,7 +83,9 @@ export default class Socks extends SocksClass {
       try {
         const lookupAddress = await lookup(host, { family: 4 })
         ip = lookupAddress.address
-      } catch (err) {}
+      } catch (err) {
+        console.log(err)
+      }
     } else if (data[3] === ATYP.IP_V4) {
       ip = host
     }

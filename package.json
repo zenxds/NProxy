@@ -16,8 +16,8 @@
     "stop": "pm2 stop NProxy",
     "restart": "pm2 restart NProxy",
     "compile": "tsc",
-    "prettier": "prettier src/**/*.ts --write",
-    "lint": "eslint src/**/*.ts",
+    "prettier": "zen prettier",
+    "lint": "zen lint",
     "test": "jest ."
   },
   "keywords": [],
@@ -31,25 +31,15 @@
       "pre-commit": "yarn lint && yarn prettier && yarn compile && yarn test && git add ."
     }
   },
-  "jest": {
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/src/"
-    ],
-    "preset": "ts-jest"
-  },
   "devDependencies": {
-    "@eslint/js": "^9.0.0",
     "@types/debug": "^4.1.7",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.12.7",
-    "eslint": "^9.0.0",
     "husky": "^9.0.11",
     "jest": "^29.7.0",
-    "prettier": "^3.2.5",
     "ts-jest": "^29.1.2",
     "typescript": "^5.4.5",
-    "typescript-eslint": "^7.6.0"
+    "zenxds-cli": "^0.3.1"
   },
   "dependencies": {
     "debug": "^4.1.1",

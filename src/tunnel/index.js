@@ -49,7 +49,7 @@ const run = config => {
   const server = config.security
     ? https.createServer({
         key: fs.readFileSync(resolve('./private.pem')),
-        cert: fs.readFileSync(resolve('./public.crt'))
+        cert: fs.readFileSync(resolve('./public.crt')),
       })
     : http.createServer()
 
@@ -62,5 +62,5 @@ const run = config => {
 }
 
 module.exports = {
-  run: run
+  run: run,
 }
