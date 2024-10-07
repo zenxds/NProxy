@@ -35,6 +35,8 @@ gcm算法还需要一个初始向量，长度推荐为12
 ## docker
 
 ```
-docker build -t zenxds/nproxy:latest .
+docker build -f client.dockerfile -t zenxds/nproxy:latest .
+docker build -f server.dockerfile -t zenxds/nproxy:latest .
+
 sh ./start.sh
 ```
