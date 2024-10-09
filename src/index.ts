@@ -6,7 +6,7 @@ import Server from './server'
 
 const configFile = path.join(__dirname, '../config.js')
 const localConfig = fs.existsSync(configFile) ? require(configFile) : {}
-const env = process.env.PROXY_ENV || 'client'
+const env = localConfig.type || process.env.PROXY_TYPE || 'client'
 
 if (env === 'client') {
   const config = Object.assign(
