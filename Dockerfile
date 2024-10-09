@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:20-alpine
 
 ENV APP_DIR /home/node/app
 
@@ -15,7 +15,7 @@ RUN yarn install --production --registry=https://registry.npmmirror.com
 
 COPY . $APP_DIR
 
-EXPOSE 1113
+EXPOSE 8886
 
 # Entrypoint
-CMD ["npm", "run", "start:client:docker"]
+CMD ["npm", "run", "start:docker"]
